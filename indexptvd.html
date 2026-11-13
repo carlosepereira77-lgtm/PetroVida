@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoPetróleo — História, Brasil, Biodiversidade e Futuro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --font-scale: 1;
+    }
+    html {
+      font-size: calc(16px * var(--font-scale));
+      scroll-behavior: smooth;
+    }
+    body.high-contrast {
+      background-color: #ffffff !important;
+      color: #000000 !important;
+    }
+    body.high-contrast .bg-slate-50,
+    body.high-contrast .bg-emerald-50,
+    body.high-contrast .bg-sky-50 {
+      background-color: #ffffff !important;
+      border: 2px solid #065f46 !important;
+    }
+    body.high-contrast p,
+    body.high-contrast span,
+    body.high-contrast li {
+      color: #000000 !important;
+    }
+
+    /* Transição suave entre abas */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.35s ease-in-out;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tooltip do Glossário Rápido */
+    .glossary-term {
+      border-bottom: 2px dashed #0284c7;
+      color: #0369a1;
+      font-weight: 600;
+      cursor: help;
+      position: relative;
+    }
+    .glossary-term:hover::after,
+    .glossary-term:focus::after {
+      content: attr(data-definition);
+      position: absolute;
+      bottom: 130%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid #16a34a;
+      border-radius: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 400;
+      line-height: 1.4;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    /* Modo Impressão / PDF Limpo */
+    @media print {
+      #accessibility-bar,
+      #main-navbar,
+      .next-chapter-btn,
+      footer {
+        display: none !important;
+      }
+      .tab-panel {
+        display: block !important;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body class="bg-white text-slate-800 antialiased selection:bg-emerald-200 selection:text-emerald-950">
+
+  <!-- Barra Superior de Acessibilidade -->
+  <div id="accessibility-bar" class="bg-emerald-950 text-white text-xs py-2 px-4 border-b border-emerald-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>Portal Aberto & Educativo • Acesso Livre sem Cadastro</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-emerald-200 hidden sm:inline">Acessibilidade:</span>
+        <button onclick="changeFontSize(-0.1)" class="px-2 py-0.5 rounded bg-emerald-900 hover:bg-emerald-800 border border-emerald-700" title="Diminuir fonte">A-</button>
+        <button onclick="resetFontSize()" class="px-2 py-0.5 rounded bg-emerald-900 hover:bg-emerald-800 border border-emerald-700" title="Tamanho padrão">A</button>
+        <button onclick="changeFontSize(0.1)" class="px-2 py-0.5 rounded bg-emerald-900 hover:bg-emerald-800 border border-emerald-700" title="Aumentar fonte">A+</button>
+        <button onclick="toggleContrast()" class="px-2.5 py-0.5 rounded bg-sky-700 hover:bg-sky-600 text-white font-medium flex items-center gap-1">
+          <i data-lucide="contrast" class="w-3.5 h-3.5"></i> Contraste
+        </button>
+        <button onclick="window.print()" class="px-2.5 py-0.5 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-medium flex items-center gap-1">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i> Salvar PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cabeçalho & Navegação por Abas -->
+  <header id="main-navbar" class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-emerald-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <!-- Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('tab-historia')">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-sky-600 flex items-center justify-center text-white shadow">
+            <i data-lucide="leaf" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-extrabold tracking-tight text-emerald-900">
+              Eco<span class="text-sky-600">Petróleo</span>
+            </h1>
+            <p class="text-xs text-slate-500">Da Origem Fóssil à Transição Ecológica</p>
+          </div>
+        </div>
+
+        <!-- Botões das 6 Abas -->
+        <nav class="flex flex-wrap gap-1.5" aria-label="Abas de Navegação">
+          <button data-tab="tab-historia" onclick="switchTab('tab-historia')" class="tab-btn active px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-sm">
+            <i data-lucide="book-open" class="w-4 h-4"></i> 1. Início & História
+          </button>
+          <button data-tab="tab-brasil" onclick="switchTab('tab-brasil')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800">
+            <i data-lucide="bar-chart-3" class="w-4 h-4"></i> 2. Brasil & Petrobras
+          </button>
+          <button data-tab="tab-cotidiano" onclick="switchTab('tab-cotidiano')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800">
+            <i data-lucide="layers" class="w-4 h-4"></i> 3. Economia & Cotidiano
+          </button>
+          <button data-tab="tab-impactos" onclick="switchTab('tab-impactos')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i> 4. Impactos Ambientais
+          </button>
+          <button data-tab="tab-futuro" onclick="switchTab('tab-futuro')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800">
+            <i data-lucide="sprout" class="w-4 h-4"></i> 5. Futuro Verde
+          </button>
+          <button data-tab="tab-quiz" onclick="switchTab('tab-quiz')" class="tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-sky-50 text-sky-800 border border-sky-200 hover:bg-sky-100">
+            <i data-lucide="help-circle" class="w-4 h-4"></i> 6. Quiz Ecológico
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- ========================================================= -->
+    <!-- ABA 1: INÍCIO & HISTÓRIA                                  -->
+    <!-- ========================================================= -->
+    <section id="tab-historia" class="tab-panel active space-y-10">
+      <!-- Hero Banner -->
+      <div class="rounded-3xl overflow-hidden bg-gradient-to-r from-emerald-50 via-white to-sky-50 border border-emerald-100 p-6 md:p-10 grid lg:grid-cols-2 gap-8 items-center">
+        <div class="space-y-4">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+            <i data-lucide="globe" class="w-3.5 h-3.5"></i> Ciência, Economia & Meio Ambiente
+          </span>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+            O legado milenar da natureza transformado no motor da civilização moderna.
+          </h2>
+          <p class="text-slate-600 leading-relaxed">
+            O petróleo não surgiu de dinossauros, mas da lenta decomposição de milhões de
+            <span class="glossary-term" tabindex="0" data-definition="Conjunto de organismos microscópicos (algas e pequenos animais) que flutuam nos oceanos e formaram a matéria orgânica original do petróleo.">plânctons e algas marinhas</span>
+            soterrados sob oceanos antigos há mais de 100 milhões de anos. Compreender sua história é essencial para proteger as florestas e os seres vivos de hoje.
+          </p>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button onclick="switchTab('tab-brasil')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm transition">
+              Ver Dados da Petrobras
+            </button>
+            <button onclick="switchTab('tab-impactos')" class="px-5 py-2.5 rounded-xl bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 font-semibold transition">
+              Impactos na Biodiversidade
+            </button>
+          </div>
+        </div>
+
+        <!-- Galeria Visual: Natureza, Seres Vivos e Petróleo -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-3">
+            <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=600&q=80" alt="Floresta verde preservada com luz solar" class="rounded-2xl h-44 w-full object-cover shadow-sm border border-emerald-100" />
+            <img src="https://images.unsplash.com/photo-1583212292454-1fe6229603b7?auto=format&fit=crop&w=600&q=80" alt="Tartaruga marinha nadando em recife de coral" class="rounded-2xl h-36 w-full object-cover shadow-sm border border-sky-100" />
+          </div>
+          <div class="space-y-3 pt-6">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80" alt="Plataforma offshore de extração de petróleo no oceano" class="rounded-2xl h-36 w-full object-cover shadow-sm border border-slate-200" />
+            <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=600&q=80" alt="Montanhas e vegetação nativa intacta" class="rounded-2xl h-44 w-full object-cover shadow-sm border border-emerald-100" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Linha do Tempo Histórica -->
+      <div class="space-y-4">
+        <h3 class="text-2xl font-bold text-emerald-900 flex items-center gap-2">
+          <i data-lucide="clock" class="w-6 h-6 text-sky-600"></i> Linha do Tempo do Petróleo
+        </h3>
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Antiguidade (4.000 a.C.)</span>
+            <h4 class="font-bold text-slate-900">Betume na Babilônia</h4>
+            <p class="text-sm text-slate-600">Afloramentos naturais de óleo eram usados para impermeabilizar barcos, pavimentar estradas e iluminar tochas.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-600">1859 — Era Moderna</span>
+            <h4 class="font-bold text-slate-900">Poço de Edwin Drake</h4>
+            <p class="text-sm text-slate-600">Na Pensilvânia (EUA), perfura-se o primeiro poço comercial (21m de profundidade), substituindo o óleo de baleia na iluminação.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-600">Século XX (1953)</span>
+            <h4 class="font-bold text-slate-900">Nasce a Petrobras</h4>
+            <p class="text-sm text-slate-600">Após a campanha "O Petróleo é Nosso", o Brasil estrutura sua indústria nacional de exploração e refino.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">2006 — Atualidade</span>
+            <h4 class="font-bold text-emerald-950">Pré-Sal & Transição</h4>
+            <p class="text-sm text-slate-700">Descobertas em águas ultraprofundas colocam o Brasil entre os maiores produtores enquanto cresce a urgência climática.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botão Próximo Capítulo -->
+      <div class="next-chapter-btn flex justify-end pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-brasil')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 shadow-sm transition">
+          Próximo Capítulo: Brasil & Petrobras <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ABA 2: BRASIL & PETROBRAS (CONECTADA AO PYTHON)           -->
+    <!-- ========================================================= -->
+    <section id="tab-brasil" class="tab-panel space-y-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-sky-50 border border-sky-200 rounded-2xl p-6">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-sky-700">Integração Python (Flask API)</span>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">O Petróleo no Brasil: Produção, Exportação e Importação</h2>
+          <p class="text-sm text-slate-600 mt-1" id="fonte-dados-texto">Sincronizando dados com o backend Python...</p>
+        </div>
+        <button onclick="carregarDadosPetrobras()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold flex items-center gap-2 self-start">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar Dados
+        </button>
+      </div>
+
+      <!-- Cards de Indicadores Reais -->
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm">
+          <span class="text-xs font-bold text-emerald-700 uppercase">Produção Pré-Sal</span>
+          <p class="text-3xl font-extrabold text-slate-900 mt-1" id="kpi-presal">--</p>
+          <p class="text-xs text-slate-500 mt-1">Representa mais de 75% da produção nacional</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white border border-sky-200 shadow-sm">
+          <span class="text-xs font-bold text-sky-700 uppercase">Produção Pós-Sal</span>
+          <p class="text-3xl font-extrabold text-slate-900 mt-1" id="kpi-possal">--</p>
+          <p class="text-xs text-slate-500 mt-1">Campos maduros terrestres e marítimos</p>
+        </div>
+        <div class="p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm">
+          <span class="text-xs font-bold text-emerald-700 uppercase">Gás Natural</span>
+          <p class="text-3xl font-extrabold text-slate-900 mt-1" id="kpi-gas">--</p>
+          <p class="text-xs text-slate-500 mt-1">Produção bruta diária no território brasileiro</p>
+        </div>
+      </div>
+
+      <!-- Gráfico Exportação vs Importação + Explicação -->
+      <div class="grid lg:grid-cols-3 gap-6 items-start">
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <h3 class="font-bold text-lg text-slate-900 mb-1">Balança Comercial: Óleo Bruto Exportado vs. Derivados Importados</h3>
+          <p class="text-xs text-slate-500 mb-4">Valores em milhões de barris por dia (mbpd)</p>
+          <canvas id="graficoBalanca" height="140"></canvas>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+            <h4 class="font-bold text-emerald-950 flex items-center gap-2">
+              <i data-lucide="help-circle" class="w-5 h-5 text-emerald-700"></i> Por que exportamos e importamos?
+            </h4>
+            <p class="text-sm text-slate-700 leading-relaxed">
+              O Brasil é autossuficiente em volume de <strong>petróleo bruto</strong>, exportando óleo leve de alta qualidade do
+              <span class="glossary-term" tabindex="0" data-definition="Camada de rochas localizada sob uma espessa camada de sal no fundo do oceano, entre 5 e 7 km de profundidade, que guarda grandes reservas de óleo leve.">Pré-Sal</span>.
+              Porém, nossas refinarias históricas foram projetadas para óleo pesado e não dão conta da demanda interna de <strong>Diesel S-10 e Gasolina</strong>, obrigando o país a importar derivados refinados.
+            </p>
+          </div>
+
+          <!-- Preços Médios Petrobras -->
+          <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-2">
+            <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Preços Médios Refinaria (Petrobras)</h4>
+            <ul id="lista-precos" class="text-sm text-slate-700 space-y-1.5">
+              <li>Carregando preços...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metas Ambientais Petrobras -->
+      <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
+        <h3 class="font-bold text-lg text-emerald-900 mb-3">Indicadores de Descarbonização & Sustentabilidade (RI Petrobras)</h3>
+        <div id="grid-metas" class="grid md:grid-cols-3 gap-4"></div>
+      </div>
+
+      <div class="next-chapter-btn flex justify-between pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-historia')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
+        </button>
+        <button onclick="switchTab('tab-cotidiano')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 shadow-sm">
+          Próximo Capítulo: Economia & Cotidiano <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ABA 3: ECONOMIA & INFOGRÁFICO DO COTIDIANO                -->
+    <!-- ========================================================= -->
+    <section id="tab-cotidiano" class="tab-panel space-y-8">
+      <div class="space-y-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Influência Econômica & Avanços</span>
+        <h2 class="text-3xl font-extrabold text-slate-900">O Petróleo Escondido no seu Dia a Dia</h2>
+        <p class="text-slate-600 max-w-3xl">
+          Além dos combustíveis que movem o transporte e definem o preço dos alimentos (frete e fertilizantes), o
+          <span class="glossary-term" tabindex="0" data-definition="Processo industrial que separa o petróleo bruto em várias frações úteis (gás, gasolina, nafta, diesel, asfalto) por meio do aquecimento.">refino</span>
+          gera a nafta petroquímica, base de milhares de produtos essenciais. Clique nos itens abaixo para descobrir sua origem e as alternativas ecológicas:
+        </p>
+      </div>
+
+      <!-- Infográfico Interativo -->
+      <div class="grid lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <button onclick="mostrarItemCotidiano('medicina')" class="item-card p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left transition hover:shadow-md">
+            <i data-lucide="heart-pulse" class="w-7 h-7 text-emerald-700 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Medicina & Hospitalar</h4>
+            <p class="text-xs text-slate-600 mt-1">Seringas, próteses, bolsas de sangue e remédios.</p>
+          </button>
+
+          <button onclick="mostrarItemCotidiano('agricultura')" class="item-card p-4 rounded-2xl border border-slate-200 bg-white text-left transition hover:border-emerald-400 hover:shadow-md">
+            <i data-lucide="wheat" class="w-7 h-7 text-sky-600 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Fertilizantes Agrícolas</h4>
+            <p class="text-xs text-slate-600 mt-1">Produção de ureia e amônia para lavouras.</p>
+          </button>
+
+          <button onclick="mostrarItemCotidiano('roupas')" class="item-card p-4 rounded-2xl border border-slate-200 bg-white text-left transition hover:border-emerald-400 hover:shadow-md">
+            <i data-lucide="shirt" class="w-7 h-7 text-emerald-600 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Roupas & Calçados</h4>
+            <p class="text-xs text-slate-600 mt-1">Poliéster, nylon, elastano e solados de borracha.</p>
+          </button>
+
+          <button onclick="mostrarItemCotidiano('eletronicos')" class="item-card p-4 rounded-2xl border border-slate-200 bg-white text-left transition hover:border-emerald-400 hover:shadow-md">
+            <i data-lucide="smartphone" class="w-7 h-7 text-sky-600 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Eletrônicos & Painéis</h4>
+            <p class="text-xs text-slate-600 mt-1">Carcaças, isolantes de cabos e resinas.</p>
+          </button>
+
+          <button onclick="mostrarItemCotidiano('embalagens')" class="item-card p-4 rounded-2xl border border-slate-200 bg-white text-left transition hover:border-emerald-400 hover:shadow-md">
+            <i data-lucide="package" class="w-7 h-7 text-emerald-600 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Embalagens & Higiene</h4>
+            <p class="text-xs text-slate-600 mt-1">Escovas de dente, frascos e filmes plásticos.</p>
+          </button>
+
+          <button onclick="mostrarItemCotidiano('asfalto')" class="item-card p-4 rounded-2xl border border-slate-200 bg-white text-left transition hover:border-emerald-400 hover:shadow-md">
+            <i data-lucide="map" class="w-7 h-7 text-sky-600 mb-2"></i>
+            <h4 class="font-bold text-slate-900">Asfalto & Construção</h4>
+            <p class="text-xs text-slate-600 mt-1">Pavimentação, tintas e impermeabilizantes.</p>
+          </button>
+        </div>
+
+        <!-- Painel de Detalhes do Item Selecionado -->
+        <div id="painel-cotidiano" class="p-6 rounded-2xl bg-gradient-to-b from-white to-emerald-50 border-2 border-emerald-200 space-y-4">
+          <span class="inline-block px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600 text-white">Detalhe do Objeto</span>
+          <h3 id="cotidiano-titulo" class="text-xl font-extrabold text-slate-900">Medicina & Insumos Hospitalares</h3>
+          <p id="cotidiano-petroleo" class="text-sm text-slate-700 leading-relaxed">
+            <strong>Papel do Petróleo:</strong> Polímeros estéreis e descartáveis (como PVC e polipropileno) permitiram cirurgias seguras, seringas descartáveis, válvulas cardíacas e embalagens que mantêm medicamentos livres de contaminação.
+          </p>
+          <div class="p-3.5 rounded-xl bg-white border border-sky-200">
+            <p id="cotidiano-eco" class="text-sm text-sky-900">
+              <strong>Alternativa Ecológica:</strong> Pesquisas avançam no uso de biopolímeros feitos de amido de milho e cana-de-açúcar para itens hospitalares não críticos e programas de reciclagem hospitalar controlada.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="next-chapter-btn flex justify-between pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-brasil')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
+        </button>
+        <button onclick="switchTab('tab-impactos')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 shadow-sm">
+          Próximo Capítulo: Impactos Ambientais <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ABA 4: IMPACTOS AMBIENTAIS & BIODIVERSIDADE               -->
+    <!-- ========================================================= -->
+    <section id="tab-impactos" class="tab-panel space-y-8">
+      <div class="grid lg:grid-cols-2 gap-8 items-center">
+        <div class="space-y-4">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Alerta Ecológico
+          </span>
+          <h2 class="text-3xl font-extrabold text-slate-900">O Custo para os Oceanos, Florestas e Seres Vivos</h2>
+          <p class="text-slate-600 leading-relaxed">
+            Desde a perfuração até a queima nos motores, a cadeia do petróleo gera pressões severas sobre a biodiversidade e o clima global.
+          </p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=800&q=80" alt="Ondas oceânicas cristalinas representando a necessidade de preservação marinha" class="rounded-2xl h-56 w-full object-cover border border-sky-100 shadow-sm" />
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center">
+            <i data-lucide="waves" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-900">Derramamentos & Fauna Marinha</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Vazamentos formam manchas tóxicas que bloqueiam a luz solar, impedem a fotossíntese de algas, sufocam peixes e impregnam as penas de aves marinhas e cascos de tartarugas.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+            <i data-lucide="trees" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-900">Desmatamento & Solo</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            A exploração terrestre em regiões sensíveis (como florestas tropicais) exige abertura de estradas e dutos, fragmentando habitats e contaminando lençóis freáticos com metais pesados.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+            <i data-lucide="cloud-fog" class="w-5 h-5"></i>
+          </div>
+          <h3 class="font-bold text-lg text-slate-900">Queima & Aquecimento Global</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            A combustão de derivados libera bilhões de toneladas de $CO_2$ e metano retidos há milhões de anos, intensificando o efeito estufa e a acidificação dos oceanos.
+          </p>
+        </div>
+      </div>
+
+      <div class="next-chapter-btn flex justify-between pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-cotidiano')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
+        </button>
+        <button onclick="switchTab('tab-futuro')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 shadow-sm">
+          Próximo Capítulo: Futuro Verde <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ABA 5: FUTURO & TRANSIÇÃO VERDE                           -->
+    <!-- ========================================================= -->
+    <section id="tab-futuro" class="tab-panel space-y-8">
+      <div class="rounded-3xl bg-gradient-to-r from-emerald-600 to-sky-700 text-white p-8 grid lg:grid-cols-2 gap-6 items-center">
+        <div class="space-y-3">
+          <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-bold">Descarbonização & Inovação</span>
+          <h2 class="text-3xl font-extrabold">O Futuro Pós-Petróleo já Começou</h2>
+          <p class="text-emerald-50 text-sm leading-relaxed">
+            O objetivo global não é apenas acabar com o petróleo da noite para o dia, mas substituí-lo gradualmente como combustível por fontes limpas e renováveis, mantendo-o apenas onde ainda é insubstituível e reciclável.
+          </p>
+        </div>
+        <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80" alt="Painéis solares em campo verde" class="rounded-2xl h-48 w-full object-cover border-2 border-white/30" />
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+          <i data-lucide="sun" class="w-7 h-7 text-emerald-700"></i>
+          <h3 class="font-bold text-slate-900">Energia Solar & Eólica</h3>
+          <p class="text-sm text-slate-600">Fontes limpas com custo em queda acelerada; o Brasil lidera a geração eólica offshore e solar na América Latina.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-sky-50 border border-sky-200 space-y-2">
+          <i data-lucide="droplets" class="w-7 h-7 text-sky-700"></i>
+          <h3 class="font-bold text-slate-900">Hidrogênio Verde</h3>
+          <p class="text-sm text-slate-600">Produzido a partir da quebra da molécula da água usando energia renovável, emitindo apenas vapor d'água na queima.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+          <i data-lucide="sprout" class="w-7 h-7 text-emerald-700"></i>
+          <h3 class="font-bold text-slate-900">Biocombustíveis Avançados</h3>
+          <p class="text-sm text-slate-600">Etanol de segunda geração, biodiesel e SAF (Combustível Sustentável de Aviação) feitos de resíduos vegetais.</p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-sky-50 border border-sky-200 space-y-2">
+          <i data-lucide="recycle" class="w-7 h-7 text-sky-700"></i>
+          <h3 class="font-bold text-slate-900">Economia Circular</h3>
+          <p class="text-sm text-slate-600">Plásticos biodegradáveis (bioplásticos) e captura de carbono (CCUS) para neutralizar emissões industriais.</p>
+        </div>
+      </div>
+
+      <div class="next-chapter-btn flex justify-between pt-4 border-t border-slate-100">
+        <button onclick="switchTab('tab-impactos')" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold flex items-center gap-2">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Anterior
+        </button>
+        <button onclick="switchTab('tab-quiz')" class="px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-semibold flex items-center gap-2 shadow-sm">
+          Testar Conhecimentos no Quiz <i data-lucide="award" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ABA 6: QUIZ ECOLÓGICO (MITO OU VERDADE)                   -->
+    <!-- ========================================================= -->
+    <section id="tab-quiz" class="tab-panel max-w-3xl mx-auto space-y-6">
+      <div class="text-center space-y-2">
+        <span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800">Desafio Interativo</span>
+        <h2 class="text-3xl font-extrabold text-slate-900">Mito ou Verdade Ecológica?</h2>
+        <p class="text-sm text-slate-600">Responda às 5 perguntas abaixo e veja o quanto você domina sobre petróleo e sustentabilidade.</p>
+      </div>
+
+      <div id="quiz-container" class="space-y-4"></div>
+
+      <div id="quiz-resultado" class="hidden p-6 rounded-2xl bg-emerald-50 border-2 border-emerald-400 text-center space-y-2">
+        <h3 class="text-xl font-extrabold text-emerald-950" id="quiz-placar"></h3>
+        <p class="text-sm text-emerald-800" id="quiz-mensagem"></p>
+        <button onclick="renderQuiz()" class="mt-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700">
+          Refazer Quiz
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé com Curiosidade Ecológica -->
+  <footer class="bg-slate-50 border-t border-emerald-100 mt-12 py-6 px-4 text-sm text-slate-600">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <i data-lucide="leaf" class="w-4 h-4 text-emerald-600"></i>
+        <span><strong>Dica Ecológica:</strong> 1 litro de óleo lubrificante descartado incorretamente pode contaminar até 1 milhão de litros de água.</span>
+      </div>
+      <span class="text-xs text-slate-400">EcoPetróleo • Python (Flask) + HTML5 • Acesso Livre</span>
+    </div>
+  </footer>
+
+  <!-- Scripts de Interatividade -->
+  <script>
+    lucide.createIcons();
+
+    // 1. Controle das Abas
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.dataset.tab === tabId) {
+          btn.className = "tab-btn active px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-sm";
+        } else {
+          btn.className = "tab-btn px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-emerald-50 hover:text-emerald-800";
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 2. Acessibilidade (Fonte & Contraste)
+    let currentScale = 1;
+    function changeFontSize(delta) {
+      currentScale = Math.min(1.3, Math.max(0.85, currentScale + delta));
+      document.documentElement.style.setProperty('--font-scale', currentScale);
+    }
+    function resetFontSize() {
+      currentScale = 1;
+      document.documentElement.style.setProperty('--font-scale', 1);
+    }
+    function toggleContrast() {
+      document.body.classList.toggle('high-contrast');
+    }
+
+    // 3. Integração com API Python (/api/dados-petrobras)
+    let chartBalanca = null;
+    async function carregarDadosPetrobras() {
+      try {
+        const res = await fetch('/api/dados-petrobras');
+        const dados = await res.json();
+
+        document.getElementById('fonte-dados-texto').textContent =
+          `Fonte: ${dados.fonte} • Atualizado em: ${dados.ultima_atualizacao}`;
+
+        document.getElementById('kpi-presal').textContent = `${dados.producao_diaria.pre_sal_mbpd} mi barris/dia`;
+        document.getElementById('kpi-possal').textContent = `${dados.producao_diaria.pos_sal_mbpd} mi barris/dia`;
+        document.getElementById('kpi-gas').textContent = `${dados.producao_diaria.gas_natural_mm3d} mi m³/dia`;
+
+        // Preços Médios
+        const p = dados.precos_medios_distribuidoras;
+        document.getElementById('lista-precos').innerHTML = `
+          <li class="flex justify-between"><span>Gasolina A:</span> <strong>${p.gasolina_a}</strong></li>
+          <li class="flex justify-between"><span>Diesel S-10:</span> <strong>${p.diesel_s10}</strong></li>
+          <li class="flex justify-between"><span>GLP (Gás de Cozinha):</span> <strong>${p.glp_13kg}</strong></li>
+        `;
+
+        // Metas Ambientais
+        const gridMetas = document.getElementById('grid-metas');
+        gridMetas.innerHTML = dados.metas_ambientais_petrobras.map(m => `
+          <div class="p-4 rounded-xl bg-white border border-emerald-100">
+            <p class="text-xs text-slate-500">${m.indicador}</p>
+            <p class="text-lg font-extrabold text-emerald-700 mt-1">${m.valor}</p>
+          </div>
+        `).join('');
+
+        // Gráfico Chart.js
+        const ctx = document.getElementById('graficoBalanca').getContext('2d');
+        if (chartBalanca) chartBalanca.destroy();
+        chartBalanca = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: dados.balanca_comercial.labels,
+            datasets: [
+              {
+                label: 'Exportação de Óleo Bruto (mbpd)',
+                data: dados.balanca_comercial.exportacao_bruto_mbpd,
+                backgroundColor: '#16a34a',
+                borderRadius: 6
+              },
+              {
+                label: 'Importação de Derivados Refinados (mbpd)',
+                data: dados.balanca_comercial.importacao_derivados_mbpd,
+                backgroundColor: '#0284c7',
+                borderRadius: 6
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      } catch (err) {
+        document.getElementById('fonte-dados-texto').textContent =
+          'Erro ao conectar com o servidor Python. Verifique se app.py está rodando.';
+      }
+    }
+
+    // 4. Infográfico Interativo do Cotidiano
+    const itensCotidiano = {
+      medicina: {
+        titulo: "Medicina & Insumos Hospitalares",
+        petroleo: "Polímeros estéreis e descartáveis (PVC, polipropileno) permitiram cirurgias seguras, seringas descartáveis, válvulas cardíacas e embalagens que mantêm remédios livres de contaminação.",
+        eco: "Pesquisas avançam no uso de biopolímeros feitos de amido de milho e cana-de-açúcar para itens hospitalares não críticos e reciclagem controlada."
+      },
+      agricultura: {
+        titulo: "Fertilizantes Agrícolas",
+        petroleo: "O gás natural e derivados do petróleo são matérias-primas centrais na síntese de amônia e ureia, fertilizantes que multiplicaram a produtividade mundial de alimentos.",
+        eco: "Biofertilizantes, fixação biológica de nitrogênio por bactérias e adubação verde reduzem a dependência de fertilizantes fósseis."
+      },
+      roupas: {
+        titulo: "Roupas, Tecidos & Calçados",
+        petroleo: "Fibras sintéticas como poliéster, nylon e elastano representam mais de 60% da produção têxtil global, além das borrachas sintéticas usadas em solados.",
+        eco: "Tecidos de algodão orgânico, linho, cânhamo, fibras de bambu e poliéster reciclado de garrafas PET reduzem a liberação de microplásticos."
+      },
+      eletronicos: {
+        titulo: "Eletrônicos & Energia Limpa",
+        petroleo: "Curiosamente, até turbinas eólicas e painéis solares usam resinas epóxi, fibras e isolantes de cabos derivados da indústria petroquímica.",
+        eco: "Desenvolvimento de pás eólicas recicláveis e circuitos impressos biodegradáveis à base de celulose."
+      },
+      embalagens: {
+        titulo: "Embalagens & Higiene Pessoal",
+        petroleo: "Frascos de shampoo, escovas de dente, cremes hidratantes (vaselina/parafina) e embalagens que conservam alimentos por mais tempo.",
+        eco: "Cosméticos sólidos sem embalagem, escovas de bambu e bioplásticos compostáveis feitos de algas ou mandioca."
+      },
+      asfalto: {
+        titulo: "Asfalto & Construção Civil",
+        petroleo: "O resíduo pesado da destilação do petróleo forma o Cimento Asfáltico de Petróleo (CAP), essencial para estradas, tintas e impermeabilizantes.",
+        eco: "Asfalto-borracha (reciclagem de pneus velhos) e bio-ligantes produzidos a partir de óleos vegetais residuais."
+      }
+    };
+
+    function mostrarItemCotidiano(chave) {
+      const info = itensCotidiano[chave];
+      document.getElementById('cotidiano-titulo').textContent = info.titulo;
+      document.getElementById('cotidiano-petroleo').innerHTML = `<strong>Papel do Petróleo:</strong> ${info.petroleo}`;
+      document.getElementById('cotidiano-eco').innerHTML = `<strong>Alternativa Ecológica:</strong> ${info.eco}`;
+    }
+
+    // 5. Quiz Interativo "Mito ou Verdade"
+    const perguntasQuiz = [
+      {
+        pergunta: "1. O petróleo é formado principalmente por restos de dinossauros soterrados.",
+        correta: false,
+        explicacao: "MITO! O petróleo vem da decomposição de microrganismos marinhos (algas e plânctons) soterrados há milhões de anos."
+      },
+      {
+        pergunta: "2. O Brasil exporta petróleo bruto, mas ainda precisa importar derivados como Diesel.",
+        correta: true,
+        explicacao: "VERDADE! Exportamos óleo leve do Pré-Sal e importamos derivados refinados porque o parque de refino interno não supre toda a demanda de diesel."
+      },
+      {
+        pergunta: "3. O Pré-Sal brasileiro responde por mais de 70% da produção nacional de petróleo.",
+        correta: true,
+        explicacao: "VERDADE! Os reservatórios das bacias de Santos e Campos lideram com folga a produção brasileira."
+      },
+      {
+        pergunta: "4. Produtos como seringas hospitalares, escovas de dente e poliéster não têm relação com o petróleo.",
+        correta: false,
+        explicacao: "MITO! Todos esses itens são fabricados a partir da nafta petroquímica obtida no refino do petróleo."
+      },
+      {
+        pergunta: "5. O Hidrogênio Verde emite apenas vapor d'água quando utilizado para gerar energia.",
+        correta: true,
+        explicacao: "VERDADE! Quando produzido por eletrólise com energia solar ou eólica, não gera emissões de gases de efeito estufa."
+      }
+    ];
+
+    let respostasUsuario = {};
+
+    function renderQuiz() {
+      respostasUsuario = {};
+      document.getElementById('quiz-resultado').classList.add('hidden');
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = perguntasQuiz.map((q, idx) => `
+        <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+          <p class="font-bold text-slate-900">${q.pergunta}</p>
+          <div class="flex gap-3">
+            <button onclick="responderQuiz(${idx}, true)" id="btn-v-${idx}" class="px-4 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold text-sm hover:bg-emerald-50">Verdade</button>
+            <button onclick="responderQuiz(${idx}, false)" id="btn-m-${idx}" class="px-4 py-1.5 rounded-lg border border-sky-300 text-sky-800 font-semibold text-sm hover:bg-sky-50">Mito</button>
+          </div>
+          <p id="feedback-${idx}" class="hidden text-sm p-3 rounded-xl"></p>
+        </div>
+      `).join('');
+    }
+
+    function responderQuiz(idx, escolha) {
+      if (respostasUsuario[idx] !== undefined) return;
+      respostasUsuario[idx] = escolha;
+
+      const q = perguntasQuiz[idx];
+      const acertou = escolha === q.correta;
+      const fb = document.getElementById(`feedback-${idx}`);
+      fb.classList.remove('hidden');
+      fb.className = `text-sm p-3 rounded-xl ${acertou ? 'bg-emerald-50 text-emerald-900 border border-emerald-200' : 'bg-amber-50 text-amber-900 border border-amber-200'}`;
+      fb.textContent = (acertou ? "✅ Acertou! " : "❌ Ops! ") + q.explicacao;
+
+      if (Object.keys(respostasUsuario).length === perguntasQuiz.length) {
+        const acertos = perguntasQuiz.filter((item, i) => respostasUsuario[i] === item.correta).length;
+        document.getElementById('quiz-placar').textContent = `Você acertou ${acertos} de ${perguntasQuiz.length} perguntas!`;
+        document.getElementById('quiz-mensagem').textContent =
+          acertos >= 4 ? "Excelente! Você domina tanto a importância econômica quanto os desafios ecológicos do petróleo." : "Bom trabalho! Navegue pelas abas anteriores para revisar os detalhes.";
+        document.getElementById('quiz-resultado').classList.remove('hidden');
+      }
+    }
+
+    // Inicialização ao carregar a página
+    carregarDadosPetrobras();
+    renderQuiz();
+  </script>
+</body>
+</html>
