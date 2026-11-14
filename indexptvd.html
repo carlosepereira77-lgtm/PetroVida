@@ -8,83 +8,29 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    :root {
-      --font-scale: 1;
-    }
-    html {
-      font-size: calc(16px * var(--font-scale));
-      scroll-behavior: smooth;
-    }
-    body.high-contrast {
-      background-color: #ffffff !important;
-      color: #000000 !important;
-    }
+    :root { --font-scale: 1; }
+    html { font-size: calc(16px * var(--font-scale)); scroll-behavior: smooth; }
+    body.high-contrast { background-color: #ffffff !important; color: #000000 !important; }
     body.high-contrast .bg-slate-50,
     body.high-contrast .bg-emerald-50,
-    body.high-contrast .bg-sky-50 {
-      background-color: #ffffff !important;
-      border: 2px solid #065f46 !important;
-    }
-    body.high-contrast p,
-    body.high-contrast span,
-    body.high-contrast li {
-      color: #000000 !important;
+    body.high-contrast .bg-sky-50 { background-color: #ffffff !important; border: 2px solid #065f46 !important; }
+    body.high-contrast p, body.high-contrast span, body.high-contrast li { color: #000000 !important; }
+
+    .tab-panel { display: none; animation: fadeIn 0.35s ease-in-out; }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .glossary-term { border-bottom: 2px dashed #0284c7; color: #0369a1; font-weight: 600; cursor: help; position: relative; }
+    .glossary-term:hover::after, .glossary-term:focus::after {
+      content: attr(data-definition); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%);
+      width: 260px; background: #ffffff; color: #0f172a; border: 2px solid #16a34a; border-radius: 0.75rem;
+      padding: 0.65rem 0.85rem; font-size: 0.82rem; font-weight: 400; line-height: 1.4;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); z-index: 50; pointer-events: none;
     }
 
-    /* Transição suave entre abas */
-    .tab-panel {
-      display: none;
-      animation: fadeIn 0.35s ease-in-out;
-    }
-    .tab-panel.active {
-      display: block;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Tooltip do Glossário Rápido */
-    .glossary-term {
-      border-bottom: 2px dashed #0284c7;
-      color: #0369a1;
-      font-weight: 600;
-      cursor: help;
-      position: relative;
-    }
-    .glossary-term:hover::after,
-    .glossary-term:focus::after {
-      content: attr(data-definition);
-      position: absolute;
-      bottom: 130%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 260px;
-      background: #ffffff;
-      color: #0f172a;
-      border: 2px solid #16a34a;
-      border-radius: 0.75rem;
-      padding: 0.65rem 0.85rem;
-      font-size: 0.82rem;
-      font-weight: 400;
-      line-height: 1.4;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-      z-index: 50;
-      pointer-events: none;
-    }
-
-    /* Modo Impressão / PDF Limpo */
     @media print {
-      #accessibility-bar,
-      #main-navbar,
-      .next-chapter-btn,
-      footer {
-        display: none !important;
-      }
-      .tab-panel {
-        display: block !important;
-        page-break-after: always;
-      }
+      #accessibility-bar, #main-navbar, .next-chapter-btn, footer { display: none !important; }
+      .tab-panel { display: block !important; page-break-after: always; }
     }
   </style>
 </head>
@@ -116,20 +62,16 @@
   <header id="main-navbar" class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-emerald-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        <!-- Logo -->
         <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('tab-historia')">
           <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-sky-600 flex items-center justify-center text-white shadow">
             <i data-lucide="leaf" class="w-6 h-6"></i>
           </div>
           <div>
-            <h1 class="text-xl font-extrabold tracking-tight text-emerald-900">
-              Eco<span class="text-sky-600">Petróleo</span>
-            </h1>
+            <h1 class="text-xl font-extrabold tracking-tight text-emerald-900">Eco<span class="text-sky-600">Petróleo</span></h1>
             <p class="text-xs text-slate-500">Da Origem Fóssil à Transição Ecológica</p>
           </div>
         </div>
 
-        <!-- Botões das 6 Abas -->
         <nav class="flex flex-wrap gap-1.5" aria-label="Abas de Navegação">
           <button data-tab="tab-historia" onclick="switchTab('tab-historia')" class="tab-btn active px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1.5 bg-emerald-600 text-white shadow-sm">
             <i data-lucide="book-open" class="w-4 h-4"></i> 1. Início & História
@@ -154,14 +96,10 @@
     </div>
   </header>
 
-  <!-- Conteúdo Principal -->
   <main class="max-w-7xl mx-auto px-4 py-8">
 
-    <!-- ========================================================= -->
-    <!-- ABA 1: INÍCIO & HISTÓRIA                                  -->
-    <!-- ========================================================= -->
+    <!-- ABA 1: INÍCIO & HISTÓRIA -->
     <section id="tab-historia" class="tab-panel active space-y-10">
-      <!-- Hero Banner -->
       <div class="rounded-3xl overflow-hidden bg-gradient-to-r from-emerald-50 via-white to-sky-50 border border-emerald-100 p-6 md:p-10 grid lg:grid-cols-2 gap-8 items-center">
         <div class="space-y-4">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
@@ -177,7 +115,7 @@
           </p>
           <div class="flex flex-wrap gap-3 pt-2">
             <button onclick="switchTab('tab-brasil')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold shadow-sm transition">
-              Ver Dados da Petrobras
+              Ver Dados do Brasil
             </button>
             <button onclick="switchTab('tab-impactos')" class="px-5 py-2.5 rounded-xl bg-white hover:bg-sky-50 text-sky-700 border border-sky-200 font-semibold transition">
               Impactos na Biodiversidade
@@ -185,7 +123,6 @@
           </div>
         </div>
 
-        <!-- Galeria Visual: Natureza, Seres Vivos e Petróleo -->
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-3">
             <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=600&q=80" alt="Floresta verde preservada com luz solar" class="rounded-2xl h-44 w-full object-cover shadow-sm border border-emerald-100" />
@@ -198,7 +135,6 @@
         </div>
       </div>
 
-      <!-- Linha do Tempo Histórica -->
       <div class="space-y-4">
         <h3 class="text-2xl font-bold text-emerald-900 flex items-center gap-2">
           <i data-lucide="clock" class="w-6 h-6 text-sky-600"></i> Linha do Tempo do Petróleo
@@ -227,7 +163,6 @@
         </div>
       </div>
 
-      <!-- Botão Próximo Capítulo -->
       <div class="next-chapter-btn flex justify-end pt-4 border-t border-slate-100">
         <button onclick="switchTab('tab-brasil')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold flex items-center gap-2 shadow-sm transition">
           Próximo Capítulo: Brasil & Petrobras <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -235,22 +170,14 @@
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- ABA 2: BRASIL & PETROBRAS (CONECTADA AO PYTHON)           -->
-    <!-- ========================================================= -->
+    <!-- ABA 2: BRASIL & PETROBRAS -->
     <section id="tab-brasil" class="tab-panel space-y-8">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-sky-50 border border-sky-200 rounded-2xl p-6">
-        <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-sky-700">Integração Python (Flask API)</span>
-          <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">O Petróleo no Brasil: Produção, Exportação e Importação</h2>
-          <p class="text-sm text-slate-600 mt-1" id="fonte-dados-texto">Sincronizando dados com o backend Python...</p>
-        </div>
-        <button onclick="carregarDadosPetrobras()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold flex items-center gap-2 self-start">
-          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Atualizar Dados
-        </button>
+      <div class="bg-sky-50 border border-sky-200 rounded-2xl p-6">
+        <span class="text-xs font-bold uppercase tracking-wider text-sky-700">Dados Consolidados • Backend Python (Flask)</span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1">O Petróleo no Brasil: Produção, Exportação e Importação</h2>
+        <p class="text-sm text-slate-600 mt-1" id="fonte-dados-texto">Carregando indicadores...</p>
       </div>
 
-      <!-- Cards de Indicadores Reais -->
       <div class="grid sm:grid-cols-3 gap-4">
         <div class="p-5 rounded-2xl bg-white border border-emerald-200 shadow-sm">
           <span class="text-xs font-bold text-emerald-700 uppercase">Produção Pré-Sal</span>
@@ -269,7 +196,6 @@
         </div>
       </div>
 
-      <!-- Gráfico Exportação vs Importação + Explicação -->
       <div class="grid lg:grid-cols-3 gap-6 items-start">
         <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
           <h3 class="font-bold text-lg text-slate-900 mb-1">Balança Comercial: Óleo Bruto Exportado vs. Derivados Importados</h3>
@@ -289,9 +215,8 @@
             </p>
           </div>
 
-          <!-- Preços Médios Petrobras -->
           <div class="p-5 rounded-2xl bg-white border border-slate-200 space-y-2">
-            <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Preços Médios Refinaria (Petrobras)</h4>
+            <h4 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Preços Médios de Referência</h4>
             <ul id="lista-precos" class="text-sm text-slate-700 space-y-1.5">
               <li>Carregando preços...</li>
             </ul>
@@ -299,9 +224,8 @@
         </div>
       </div>
 
-      <!-- Metas Ambientais Petrobras -->
       <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200">
-        <h3 class="font-bold text-lg text-emerald-900 mb-3">Indicadores de Descarbonização & Sustentabilidade (RI Petrobras)</h3>
+        <h3 class="font-bold text-lg text-emerald-900 mb-3">Indicadores de Descarbonização & Sustentabilidade (Petrobras)</h3>
         <div id="grid-metas" class="grid md:grid-cols-3 gap-4"></div>
       </div>
 
@@ -315,9 +239,7 @@
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- ABA 3: ECONOMIA & INFOGRÁFICO DO COTIDIANO                -->
-    <!-- ========================================================= -->
+    <!-- ABA 3: ECONOMIA & INFOGRÁFICO DO COTIDIANO -->
     <section id="tab-cotidiano" class="tab-panel space-y-8">
       <div class="space-y-2">
         <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Influência Econômica & Avanços</span>
@@ -329,7 +251,6 @@
         </p>
       </div>
 
-      <!-- Infográfico Interativo -->
       <div class="grid lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 grid sm:grid-cols-2 md:grid-cols-3 gap-3">
           <button onclick="mostrarItemCotidiano('medicina')" class="item-card p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left transition hover:shadow-md">
@@ -369,12 +290,11 @@
           </button>
         </div>
 
-        <!-- Painel de Detalhes do Item Selecionado -->
         <div id="painel-cotidiano" class="p-6 rounded-2xl bg-gradient-to-b from-white to-emerald-50 border-2 border-emerald-200 space-y-4">
           <span class="inline-block px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-600 text-white">Detalhe do Objeto</span>
           <h3 id="cotidiano-titulo" class="text-xl font-extrabold text-slate-900">Medicina & Insumos Hospitalares</h3>
           <p id="cotidiano-petroleo" class="text-sm text-slate-700 leading-relaxed">
-            <strong>Papel do Petróleo:</strong> Polímeros estéreis e descartáveis (como PVC e polipropileno) permitiram cirurgias seguras, seringas descartáveis, válvulas cardíacas e embalagens que mantêm medicamentos livres de contaminação.
+            <strong>Papel do Petróleo:</strong> Polímeros estéreis e descartáveis (como PVC e polipropileno) permitiram cirurgias seguras, seringas descartáveis, válvulas cardíacas e embalagens que mantêm remédios livres de contaminação.
           </p>
           <div class="p-3.5 rounded-xl bg-white border border-sky-200">
             <p id="cotidiano-eco" class="text-sm text-sky-900">
@@ -394,9 +314,7 @@
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- ABA 4: IMPACTOS AMBIENTAIS & BIODIVERSIDADE               -->
-    <!-- ========================================================= -->
+    <!-- ABA 4: IMPACTOS AMBIENTAIS -->
     <section id="tab-impactos" class="tab-panel space-y-8">
       <div class="grid lg:grid-cols-2 gap-8 items-center">
         <div class="space-y-4">
@@ -438,7 +356,7 @@
           </div>
           <h3 class="font-bold text-lg text-slate-900">Queima & Aquecimento Global</h3>
           <p class="text-sm text-slate-600 leading-relaxed">
-            A combustão de derivados libera bilhões de toneladas de $CO_2$ e metano retidos há milhões de anos, intensificando o efeito estufa e a acidificação dos oceanos.
+            A combustão de derivados libera bilhões de toneladas de CO₂ e metano retidos há milhões de anos, intensificando o efeito estufa e a acidificação dos oceanos.
           </p>
         </div>
       </div>
@@ -453,9 +371,7 @@
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- ABA 5: FUTURO & TRANSIÇÃO VERDE                           -->
-    <!-- ========================================================= -->
+    <!-- ABA 5: FUTURO & TRANSIÇÃO VERDE -->
     <section id="tab-futuro" class="tab-panel space-y-8">
       <div class="rounded-3xl bg-gradient-to-r from-emerald-600 to-sky-700 text-white p-8 grid lg:grid-cols-2 gap-6 items-center">
         <div class="space-y-3">
@@ -504,9 +420,7 @@
       </div>
     </section>
 
-    <!-- ========================================================= -->
-    <!-- ABA 6: QUIZ ECOLÓGICO (MITO OU VERDADE)                   -->
-    <!-- ========================================================= -->
+    <!-- ABA 6: QUIZ ECOLÓGICO -->
     <section id="tab-quiz" class="tab-panel max-w-3xl mx-auto space-y-6">
       <div class="text-center space-y-2">
         <span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-800">Desafio Interativo</span>
@@ -527,7 +441,6 @@
 
   </main>
 
-  <!-- Rodapé com Curiosidade Ecológica -->
   <footer class="bg-slate-50 border-t border-emerald-100 mt-12 py-6 px-4 text-sm text-slate-600">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="flex items-center gap-2">
@@ -538,11 +451,9 @@
     </div>
   </footer>
 
-  <!-- Scripts de Interatividade -->
   <script>
     lucide.createIcons();
 
-    // 1. Controle das Abas
     function switchTab(tabId) {
       document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
@@ -557,7 +468,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 2. Acessibilidade (Fonte & Contraste)
     let currentScale = 1;
     function changeFontSize(delta) {
       currentScale = Math.min(1.3, Math.max(0.85, currentScale + delta));
@@ -571,21 +481,17 @@
       document.body.classList.toggle('high-contrast');
     }
 
-    // 3. Integração com API Python (/api/dados-petrobras)
     let chartBalanca = null;
-    async function carregarDadosPetrobras() {
+    async function carregarDadosBrasil() {
       try {
-        const res = await fetch('/api/dados-petrobras');
+        const res = await fetch('/api/dados-brasil');
         const dados = await res.json();
 
-        document.getElementById('fonte-dados-texto').textContent =
-          `Fonte: ${dados.fonte} • Atualizado em: ${dados.ultima_atualizacao}`;
-
+        document.getElementById('fonte-dados-texto').textContent = `Fonte: ${dados.fonte}`;
         document.getElementById('kpi-presal').textContent = `${dados.producao_diaria.pre_sal_mbpd} mi barris/dia`;
         document.getElementById('kpi-possal').textContent = `${dados.producao_diaria.pos_sal_mbpd} mi barris/dia`;
         document.getElementById('kpi-gas').textContent = `${dados.producao_diaria.gas_natural_mm3d} mi m³/dia`;
 
-        // Preços Médios
         const p = dados.precos_medios_distribuidoras;
         document.getElementById('lista-precos').innerHTML = `
           <li class="flex justify-between"><span>Gasolina A:</span> <strong>${p.gasolina_a}</strong></li>
@@ -593,7 +499,6 @@
           <li class="flex justify-between"><span>GLP (Gás de Cozinha):</span> <strong>${p.glp_13kg}</strong></li>
         `;
 
-        // Metas Ambientais
         const gridMetas = document.getElementById('grid-metas');
         gridMetas.innerHTML = dados.metas_ambientais_petrobras.map(m => `
           <div class="p-4 rounded-xl bg-white border border-emerald-100">
@@ -602,7 +507,6 @@
           </div>
         `).join('');
 
-        // Gráfico Chart.js
         const ctx = document.getElementById('graficoBalanca').getContext('2d');
         if (chartBalanca) chartBalanca.destroy();
         chartBalanca = new Chart(ctx, {
@@ -631,11 +535,10 @@
         });
       } catch (err) {
         document.getElementById('fonte-dados-texto').textContent =
-          'Erro ao conectar com o servidor Python. Verifique se app.py está rodando.';
+          'Erro ao carregar dados do servidor Python.';
       }
     }
 
-    // 4. Infográfico Interativo do Cotidiano
     const itensCotidiano = {
       medicina: {
         titulo: "Medicina & Insumos Hospitalares",
@@ -676,7 +579,6 @@
       document.getElementById('cotidiano-eco').innerHTML = `<strong>Alternativa Ecológica:</strong> ${info.eco}`;
     }
 
-    // 5. Quiz Interativo "Mito ou Verdade"
     const perguntasQuiz = [
       {
         pergunta: "1. O petróleo é formado principalmente por restos de dinossauros soterrados.",
@@ -715,8 +617,8 @@
         <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
           <p class="font-bold text-slate-900">${q.pergunta}</p>
           <div class="flex gap-3">
-            <button onclick="responderQuiz(${idx}, true)" id="btn-v-${idx}" class="px-4 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold text-sm hover:bg-emerald-50">Verdade</button>
-            <button onclick="responderQuiz(${idx}, false)" id="btn-m-${idx}" class="px-4 py-1.5 rounded-lg border border-sky-300 text-sky-800 font-semibold text-sm hover:bg-sky-50">Mito</button>
+            <button onclick="responderQuiz(${idx}, true)" class="px-4 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold text-sm hover:bg-emerald-50">Verdade</button>
+            <button onclick="responderQuiz(${idx}, false)" class="px-4 py-1.5 rounded-lg border border-sky-300 text-sky-800 font-semibold text-sm hover:bg-sky-50">Mito</button>
           </div>
           <p id="feedback-${idx}" class="hidden text-sm p-3 rounded-xl"></p>
         </div>
@@ -743,8 +645,7 @@
       }
     }
 
-    // Inicialização ao carregar a página
-    carregarDadosPetrobras();
+    carregarDadosBrasil();
     renderQuiz();
   </script>
 </body>
